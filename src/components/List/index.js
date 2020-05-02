@@ -29,8 +29,8 @@ class CarList extends Component {
           {storeData &&
             storeData.length &&
             storeData.length > 0 &&
-            storeData.map((carData) => {
-              return <ListCard data={carData} />;
+            storeData.map((carData, idx) => {
+              return <ListCard data={carData} key={idx} />;
             })}
         </div>
       </Fragment>

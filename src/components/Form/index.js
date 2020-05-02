@@ -103,7 +103,7 @@ class BookingForm extends Component {
     } else {
       //mobile number validation: indian numbers with +91 only
       let mobileValidationResult = this.mobileValidate(mobile);
-      if (mobileValidationResult == false) {
+      if (mobileValidationResult === false) {
         this.setState({
           errors: {
             mobileError: "Enter valid 91<10 digit> mobile number!",
@@ -112,7 +112,7 @@ class BookingForm extends Component {
         result = false;
       } else {
         //validating if +91 is added or not
-        if (mobile.indexOf("91") != 0) {
+        if (mobile.indexOf("91") !== 0) {
           this.setState({
             errors: {
               mobileError: "Add 91 with mobile number!",
@@ -189,7 +189,7 @@ class BookingForm extends Component {
 
       if (index >= 0) {
         //it means we have this car
-        if (storeData["carList"][index].available == true) {
+        if (storeData["carList"][index].available === true) {
           let carName = storeData["carList"][index].name;
 
           //now calling displatch as car exists and is also available
@@ -233,7 +233,6 @@ class BookingForm extends Component {
 
   render() {
     const {
-      id,
       name,
       mobile,
       issueDate,
@@ -277,7 +276,7 @@ class BookingForm extends Component {
                           />
                           {errors &&
                             errors.nameError &&
-                            errors.nameError != "" && (
+                            errors.nameError !== "" && (
                               <div className="form-validation__error">
                                 {errors.nameError}
                               </div>
@@ -297,7 +296,7 @@ class BookingForm extends Component {
                           />
                           {errors &&
                             errors.mobileError &&
-                            errors.mobileError != "" && (
+                            errors.mobileError !== "" && (
                               <div className="form-validation__error">
                                 {errors.mobileError}
                               </div>
@@ -316,7 +315,7 @@ class BookingForm extends Component {
                           />
                           {errors &&
                             errors.issueDateError &&
-                            errors.issueDateError != "" && (
+                            errors.issueDateError !== "" && (
                               <div className="form-validation__error">
                                 {errors.issueDateError}
                               </div>
@@ -335,7 +334,7 @@ class BookingForm extends Component {
                           />
                           {errors &&
                             errors.returnDateError &&
-                            errors.returnDateError != "" && (
+                            errors.returnDateError !== "" && (
                               <div className="form-validation__error">
                                 {errors.returnDateError}
                               </div>
@@ -356,7 +355,7 @@ class BookingForm extends Component {
                           }}
                           onClick={(e) => this.props.history.goBack()}
                         >
-                          <i class="fas fa-angle-left mr-2"></i>
+                          <i className="fas fa-angle-left mr-2"></i>
                           Back
                         </Button>
                         <Button

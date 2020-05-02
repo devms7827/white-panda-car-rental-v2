@@ -26,7 +26,7 @@ class PreviewDetails extends Component {
       <Fragment>
         {data && !data.id && <Loading />}
 
-        {data && data.id && data.id != "" && (
+        {data && data.id && data.id !== "" && (
           <Fragment>
             <div className="container custom-container">
               <Button
@@ -39,7 +39,7 @@ class PreviewDetails extends Component {
                 }}
                 onClick={(e) => this.props.history.goBack()}
               >
-                <i class="fas fa-angle-left mr-2"></i>
+                <i className="fas fa-angle-left mr-2"></i>
                 Go Back
               </Button>
             </div>
@@ -75,10 +75,10 @@ const Details = (data) => {
               <Col sm={12} className="px-0">
                 <div className="preview-features">
                   <span>
-                    <i class="fas fa-eye-dropper mr-1"></i> {car.color}
+                    <i className="fas fa-eye-dropper mr-1"></i> {car.color}
                   </span>
                   <span style={{ position: "absolute", left: "8rem" }}>
-                    <i class="fas fa-male mr-1"></i> {car.seater} seater
+                    <i className="fas fa-male mr-1"></i> {car.seater} seater
                   </span>
                 </div>
               </Col>
@@ -92,13 +92,13 @@ const Details = (data) => {
                 <Link
                   to={`/book/${car.id}`}
                   className={`btn btn-secondary custom-button ${
-                    car.available == false ? "disabled" : ""
+                    car.available === false ? "disabled" : ""
                   }`}
                 >
                   Book Now
                 </Link>
 
-                {car.available == false && (
+                {car.available === false && (
                   <span className="preview-btn__unavailable">
                     Currently unavailable!
                   </span>
@@ -124,7 +124,7 @@ const Details = (data) => {
             <p>{car.description}</p>
           </div>
         </div>
-        {car.available == false ? (
+        {car.available === false ? (
           <Fragment>
             <div className="preview-details__heading">Current Booking</div>
             <hr className="preview-details__hr" />

@@ -12,9 +12,9 @@ const Footer = () => {
         </address>
       </div>
       <div className="footer-icons">
-        <i class="fab fa-twitter mr-5"></i>
-        <i class="fab fa-instagram mr-5"></i>
-        <i class="fab fa-linkedin"></i>
+        <i className="fab fa-twitter mr-5"></i>
+        <i className="fab fa-instagram mr-5"></i>
+        <i className="fab fa-linkedin"></i>
       </div>
       <div className="footer-links d-flex justify-content-between">
         <span className="d-flex justify-content-between footer-nav__links">

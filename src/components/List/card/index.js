@@ -35,10 +35,10 @@ class ListCard extends Component {
               <div className="card-title mb-md-4 mb-sm-3">{data.name}</div>
               <div className="card-features">
                 <span>
-                  <i class="fas fa-eye-dropper mr-1"></i> {data.color}
+                  <i className="fas fa-eye-dropper mr-1"></i> {data.color}
                 </span>
                 <span className="card-features__seats">
-                  <i class="fas fa-male mr-1"></i> {data.seater} seater
+                  <i className="fas fa-male mr-1"></i> {data.seater} seater
                 </span>
               </div>
             </Col>

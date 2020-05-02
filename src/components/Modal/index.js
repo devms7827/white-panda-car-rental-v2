@@ -27,21 +27,21 @@ const CustomModal = (props) => {
           <Row>
             <Col sm={4}>
               <div className="modal-icon">
-                {status && status == "confirmed" ? (
-                  <i class="far fa-check-circle booking-confimed__check"></i>
+                {status && status === "confirmed" ? (
+                  <i className="far fa-check-circle booking-confimed__check"></i>
                 ) : (
-                  <i class="fas fa-exclamation-triangle booking-error__inform"></i>
+                  <i className="fas fa-exclamation-triangle booking-error__inform"></i>
                 )}
               </div>
             </Col>
             <Col sm={8} className="my-auto p-2 py-3">
               <div className="modal-heading__msg">
-                {status && status == "confirmed"
+                {status && status === "confirmed"
                   ? "booking confirmed!"
                   : "error"}
               </div>
               <div className="mb-3">
-                {status && status == "confirmed" ? (
+                {status && status === "confirmed" ? (
                   <Fragment>
                     <div>
                       <span className="booking-confimed__variable">
@@ -66,7 +66,7 @@ const CustomModal = (props) => {
               </div>
               <div className="text-right pt-2" style={{ marginRight: "2rem" }}>
                 <Link to="/" className="modal-button__link">
-                  {status && status == "confirmed" ? "Continue" : "OK"}
+                  {status && status === "confirmed" ? "Continue" : "OK"}
                 </Link>
               </div>
             </Col>
