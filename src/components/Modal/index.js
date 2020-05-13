@@ -45,7 +45,7 @@ const CustomModal = (props) => {
                   <Fragment>
                     <div>
                       <span className="booking-confimed__variable">
-                        Car booked:
+                        Booked for:
                       </span>
                       <span className="booking-confimed__value">
                         {msg && msg.name}
@@ -65,9 +65,18 @@ const CustomModal = (props) => {
                 )}
               </div>
               <div className="text-right pt-2" style={{ marginRight: "2rem" }}>
-                <Link to="/" className="modal-button__link">
+                {/* <Link to="/" className="modal-button__link">
                   {status && status === "confirmed" ? "Continue" : "OK"}
-                </Link>
+                </Link> */}
+                <a
+                  href="#"
+                  className="modal-button__link"
+                  onClick={(e) => {
+                    window.history.back();
+                  }}
+                >
+                  {status && status === "confirmed" ? "Continue" : "OK"}
+                </a>
               </div>
             </Col>
           </Row>

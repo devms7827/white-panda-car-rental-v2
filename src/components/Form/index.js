@@ -13,6 +13,9 @@ import moment from "moment";
 import CustomModal from "../Modal";
 import { store } from "../../index";
 import * as actions from "../../store/cars";
+import Loading from "../Loading";
+import axios from "axios";
+import serverLink from "../../serverLink";
 
 class BookingForm extends Component {
   constructor(props) {
@@ -32,6 +35,8 @@ class BookingForm extends Component {
       showModal: false,
       modalStatus: "",
       modalMsg: "",
+      formLoading: false,
+      buttonText: "book car",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -44,6 +49,7 @@ class BookingForm extends Component {
     this.setState({
       id,
     });
+    this.getBookingDetails(id);
   }
 
   handleChange(event) {
@@ -170,6 +176,77 @@ class BookingForm extends Component {
     return result;
   }
 
+  saveBookingDetails = (details) => {
+    // Setting the formLoading to true to indicate form is being saved in backend
+    this.setState({
+      formLoading: true,
+    });
+
+    // Call the backend api for saving/updating these details in the database
+    axios
+      .patch(`${serverLink}/book/${this.state.id}`, details)
+      .then((result) => {
+        const { data } = result;
+        if (data && data.status && data.status == 1) {
+          //showing confirmed booking popup message
+          this.setState({
+            showModal: true,
+            modalStatus: "confirmed",
+            modalMsg: {
+              name: details.name,
+              issueDate: details.issueDate,
+              returnDate: details.returnDate,
+            },
+          });
+        } else {
+          // alert("Error: Some error occured while saving car booking details.");
+          this.setState({
+            showModal: true,
+            modalStatus: "error",
+            modalMsg: data.message,
+          });
+        }
+      });
+
+    // Setting the formLoading to false to indicate form is done processing
+    this.setState({
+      formLoading: false,
+    });
+  };
+
+  getBookingDetails = (id) => {
+    // First get the car details of the current car being booked
+    axios.get(`${serverLink}/details/${id}`).then((result) => {
+      const { data } = result;
+      if (data && data.status && data.status == 1) {
+        const { payload } = data;
+        // Now if the booking details are available for the car, convert them and setState the values for edit
+        if (payload && payload._id && payload._id != "" && !payload.available) {
+          this.setState({
+            name: payload.currentBooking.name,
+            mobile: payload.currentBooking.mobile.toString(),
+            issueDate: moment(
+              payload.currentBooking.issueDate,
+              "Do MMM, YYYY"
+            ).format("YYYY-MM-DD"),
+            returnDate: moment(
+              payload.currentBooking.returnDate,
+              "Do MMM, YYYY"
+            ).format("YYYY-MM-DD"),
+            buttonText: "update booking",
+          });
+        }
+        // this.setState({
+        //   data: data.payload,
+        // });
+      } else {
+        alert(
+          "Error: Some error occured while fetching cars details for this car."
+        );
+      }
+    });
+  };
+
   handleSubmit(event) {
     event.preventDefault();
 
@@ -177,57 +254,65 @@ class BookingForm extends Component {
     if (this.validateFormFields()) {
       // console.log("Form validation successful.");
 
-      let { id, name, mobile, issueDate, returnDate } = this.state;
+      let { name, mobile, issueDate, returnDate } = this.state;
 
       //modifying dates after successful validation
       issueDate = moment(issueDate, "YYYY-MM-DD").format("Do MMM, YYYY");
       returnDate = moment(returnDate, "YYYY-MM-DD").format("Do MMM, YYYY");
 
-      //dispatching data to store only when car is not booked already
-      const storeData = store.getState();
-      const index = storeData.carList.findIndex((car) => car.id == id);
+      // Instead of the long commented code of redux, we will just call the service to save these booking details.
+      this.saveBookingDetails({
+        name,
+        mobile,
+        issueDate,
+        returnDate,
+      });
 
-      if (index >= 0) {
-        //it means we have this car
-        if (storeData["carList"][index].available === true) {
-          let carName = storeData["carList"][index].name;
+      // //dispatching data to store only when car is not booked already
+      // const storeData = store.getState();
+      // const index = storeData.carList.findIndex((car) => car.id == id);
 
-          //now calling displatch as car exists and is also available
-          store.dispatch(
-            actions.carBooked({
-              id,
-              name,
-              mobile,
-              issueDate,
-              returnDate,
-            })
-          );
-          // console.log("store after dispatch = ", store.getState());
+      // if (index >= 0) {
+      //   //it means we have this car
+      //   if (storeData["carList"][index].available === true) {
+      //     let carName = storeData["carList"][index].name;
 
-          //showing confirmed booking popup message
-          this.setState({
-            showModal: true,
-            modalStatus: "confirmed",
-            modalMsg: { name: carName, issueDate, returnDate },
-          });
-        } else {
-          //showing error msg as car exists but its not available
-          // console.log("showing error msg as car exists but its not available");
-          this.setState({
-            showModal: true,
-            modalStatus: "error",
-            modalMsg: "Sorry, car is not available!",
-          });
-        }
-      } else {
-        //it means we do not have this car! so show error msg!
-        // console.log("we do not have this car! so show error msg!");
-        this.setState({
-          showModal: true,
-          modalStatus: "error",
-          modalMsg: "Sorry, no car details found!",
-        });
-      }
+      //     //now calling displatch as car exists and is also available
+      //     store.dispatch(
+      //       actions.carBooked({
+      //         id,
+      //         name,
+      //         mobile,
+      //         issueDate,
+      //         returnDate,
+      //       })
+      //     );
+      //     // console.log("store after dispatch = ", store.getState());
+
+      //     //showing confirmed booking popup message
+      //     this.setState({
+      //       showModal: true,
+      //       modalStatus: "confirmed",
+      //       modalMsg: { name: carName, issueDate, returnDate },
+      //     });
+      //   } else {
+      //     //showing error msg as car exists but its not available
+      //     // console.log("showing error msg as car exists but its not available");
+      //     this.setState({
+      //       showModal: true,
+      //       modalStatus: "error",
+      //       modalMsg: "Sorry, car is not available!",
+      //     });
+      //   }
+      // } else {
+      //   //it means we do not have this car! so show error msg!
+      //   // console.log("we do not have this car! so show error msg!");
+      //   this.setState({
+      //     showModal: true,
+      //     modalStatus: "error",
+      //     modalMsg: "Sorry, no car details found!",
+      //   });
+      // }
     }
   }
 
@@ -241,6 +326,8 @@ class BookingForm extends Component {
       showModal,
       modalStatus,
       modalMsg,
+      formLoading,
+      buttonText,
     } = this.state;
 
     return (
@@ -249,7 +336,8 @@ class BookingForm extends Component {
           <Row style={{ backgroundColor: "#f5f5f5" }}>
             <Col md={0} lg={3} className="p-0">
               <img
-                src="https://pixabay.com/get/52e5d1414e5bb108f5d08460da2932761d3cd7e05b5075_1280.jpg"
+                // src="https://wimg.jakpost.travel/wimages/sm/179-1798401_car-wash-fundraiser-idea-vintage-cars-wallpaper-portrait.jpg"
+                src="https://www.techtapper.com/wp-content/uploads/2013/05/HD-Racing-cars-wallpapers-for-iPhone-5-26.jpg"
                 className="img-fluid card-img form-img"
                 alt="Book a car now!"
                 title="Book a car now!"
@@ -360,10 +448,10 @@ class BookingForm extends Component {
                         </Button>
                         <Button
                           color="secondary"
-                          className="custom-button px-4"
+                          className="custom-button px-4 text-capitalize"
                           type="submit"
                         >
-                          Book car
+                          {buttonText}
                         </Button>
                       </Col>
                     </Row>
@@ -372,6 +460,7 @@ class BookingForm extends Component {
               </Row>
             </Col>
           </Row>
+          {formLoading && <Loading />}
           {showModal && (
             <CustomModal
               status={modalStatus}

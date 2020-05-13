@@ -315,13 +315,11 @@
 /* Loading Symbol Styles =====================================*/
 
 .loading {
-  font-size: 5rem;
-  position: absolute;
-  left: 48%;
-  top: 35%;
+  font-size: 4rem;
+  text-align: center;
 }
 
-@media (max-width: 575px) {
+/* @media (max-width: 575px) {
   .loading {
     font-size: 4rem;
     left: 43%;
@@ -347,7 +345,7 @@
     font-size: 5rem;
     left: 47%;
   }
-}
+} */
 
 /* Loading Symbol Styles =====================================*/
 

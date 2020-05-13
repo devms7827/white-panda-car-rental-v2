@@ -59,7 +59,7 @@ class ListCard extends Component {
             size="md"
             className="custom-button"
             disabled={data.available ? false : true}
-            onClick={() => this.nextPage(`/book/${data.id}`)}
+            onClick={() => this.nextPage(`/book/${data._id}`)}
           >
             Book Now
           </Button>
@@ -67,7 +67,7 @@ class ListCard extends Component {
             color="light"
             size="md"
             className="custom-button"
-            onClick={() => this.nextPage(`/details/${data.id}`)}
+            onClick={() => this.nextPage(`/details/${data._id}`)}
           >
             Details
           </Button>

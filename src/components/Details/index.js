@@ -4,6 +4,8 @@ import { store } from "../../index";
 import { Row, Col, Button, Badge, Table } from "reactstrap";
 import Footer from "../Footer";
 import { withRouter, Link } from "react-router-dom";
+import axios from "axios";
+import serverLink from "../../serverLink";
 
 class PreviewDetails extends Component {
   state = {
@@ -13,20 +15,37 @@ class PreviewDetails extends Component {
   componentDidMount() {
     // console.log("PreviewDetails > componentDidMount > props = ", this.props);
     const { id } = this.props.match.params;
-    const storeData = store.getState();
-    const data = storeData.carList.find((car) => car.id == id);
-    this.setState({
-      data,
-    });
+    this.getCarDetails(id);
+    // const storeData = store.getState();
+    // const data = storeData.carList.find((car) => car.id == id);
+    // this.setState({
+    //   data,
+    // });
   }
+
+  getCarDetails = (id) => {
+    // Now we will call the backend api to get cars details this car model id from the database.
+    axios.get(`${serverLink}/details/${id}`).then((result) => {
+      const { data } = result;
+      if (data && data.status && data.status == 1) {
+        this.setState({
+          data: data.payload,
+        });
+      } else {
+        alert(
+          "Error: Some error occured while fetching cars details for this car."
+        );
+      }
+    });
+  };
 
   render() {
     const { data } = this.state;
     return (
       <Fragment>
-        {data && !data.id && <Loading />}
+        {data && !data._id && <Loading />}
 
-        {data && data.id && data.id !== "" && (
+        {data && data._id && data._id !== "" && (
           <Fragment>
             <div className="container custom-container">
               <Button
@@ -54,6 +73,23 @@ class PreviewDetails extends Component {
 export default withRouter(PreviewDetails);
 
 const Details = (data) => {
+  const deleteBooking = (id) => {
+    // Calling the delete booking api to delete the current car booking from the database
+    if (window.confirm("Are you sure you want to cancel this booking?")) {
+      axios.patch(`${serverLink}/book/cancel/${id}`).then((result) => {
+        const { data } = result;
+        if (data && data.status && data.status == 1) {
+          alert(data.message);
+        } else {
+          alert("Error: Some error occured while deleting car booking.");
+        }
+      });
+
+      // Redirecting the user to main page
+      window.open("/", "_self");
+    }
+  };
+
   let car = data.data;
   return (
     <div className="container custom-container">
@@ -90,7 +126,7 @@ const Details = (data) => {
               </Col>
               <Col sm={12} className="px-0 mb-sm-4 custom-preview__button">
                 <Link
-                  to={`/book/${car.id}`}
+                  to={`/book/${car._id}`}
                   className={`btn btn-secondary custom-button ${
                     car.available === false ? "disabled" : ""
                   }`}
@@ -135,6 +171,7 @@ const Details = (data) => {
                   <th>Phone Number</th>
                   <th>Issue Date</th>
                   <th>Return Date</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody className="text-capitalize" style={{ color: "black" }}>
@@ -143,6 +180,21 @@ const Details = (data) => {
                   <td>+{car.currentBooking.mobile}</td>
                   <td>{car.currentBooking.issueDate}</td>
                   <td>{car.currentBooking.returnDate}</td>
+                  <td>
+                    <Link to={`/book/${car._id}`}>Update</Link>
+                    <i
+                      className="fas fa-grip-lines-vertical"
+                      style={{ color: "#6c7b95", margin: "0rem 0.8rem" }}
+                    ></i>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        deleteBooking(car._id);
+                      }}
+                    >
+                      Delete
+                    </a>
+                  </td>
                 </tr>
               </tbody>
             </Table>
